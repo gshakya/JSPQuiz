@@ -12,7 +12,9 @@ package com.gunjan.WAP.model;
 public class Quiz {
 
     private Question[] questions = {new Question("1,2,3,4,5", "6" , "Six"), new Question("6,5,4,3,2", "1","One")};
-
+    
+    private int[] score = {10,5,2,0};
+    
     private int correctCount;
 
     private int currIndex;
@@ -22,6 +24,14 @@ public class Quiz {
         currIndex = 0;
     }
 
+    public int getScore(){
+        try{
+            return score[getCurrentTries()];
+        }
+        catch (ArrayIndexOutOfBoundsException e){
+            return 0;
+        }
+    }
     public int getNumCorrect() {
         return correctCount;
     }
@@ -29,17 +39,29 @@ public class Quiz {
     public String getCurrentQuestion() {
         return questions[currIndex].getQuestion();
     }
+    
+    public String getCurrentAns(){
+        return  questions[currIndex].getAnswer();
+    }
 
      public String getCurrentHint() {
         return questions[currIndex].getHint();
     }
     
+     public void increaseCurrTries(){
+          questions[currIndex].increaseTries();
+     }
+     
+     public int getCurrentTries(){
+         return questions[currIndex].getTries();
+     }
+     
     public boolean isCorrect(String answer) {
         if (questions[currIndex].getAnswer().equals(answer)) {
 
             return true;
         }
-
+        increaseCurrTries();
         return false;
     }
 
@@ -65,6 +87,15 @@ class Question {
     private String question;
     private String answer;
     private String hint;
+    private int tries = 0;
+
+    public int getTries() {
+        return tries;
+    }
+
+    public void increaseTries() {
+        tries++;
+    }
 
     public Question(String question, String answer, String hint) {
         this.question = question;

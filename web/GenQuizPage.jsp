@@ -16,20 +16,19 @@
             
             <span style ='display:${showAgeRequest}'>
                 Age: <input  type ="text" name ="txtAge" />
+                <p><input type='submit' name='btnAge' value='Submit Age' /></p> 
                 <br>
                 <span style='color:red'>${ageErrMsg}</span>
-            </span>          
+            </span>  
+            Attempt ${quiz.currentTries}/3
             
             <p>Your current score is: ${quiz.numCorrect} </br></br>
             <p>Guess the next number in the sequence! 
                 ${quiz.currentQuestion}</p>
 
-            <p>Your answer:<input type='text' name='txtAnswer' value='' /></p> 
-            
-            
+            <p>Your answer:<input type='text' name='txtAnswer' value='${ans}' /></p> 
 
-
-            <p style='color:red;display:${displayWrong};' >Your last answer was not correct! Please try again</p>
+            <p style='color:red;display:${displayWrong};' >${wrongGuessMsg}</p>
 
 
             <p><input type='submit' name='btnNext' value='Next' /></p> 

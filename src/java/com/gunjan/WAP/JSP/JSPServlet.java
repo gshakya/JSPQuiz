@@ -47,8 +47,9 @@ public class JSPServlet extends HttpServlet {
         request.setAttribute("displayWrong", "none");
         request.getSession().setAttribute("quiz", quiz);
         request.getSession().setAttribute("ageErrMsg", "");
-        request.getSession().setAttribute("age",null);
+        request.getSession().setAttribute("age", null);
         request.getSession().setAttribute("showAgeRequest", "block");
+        request.getSession().setAttribute("ans", "");
         System.out.println("Got DoGet");
         RequestDispatcher dispatch = request.getRequestDispatcher("GenQuizPage.jsp");
         dispatch.forward(request, response);
@@ -68,41 +69,81 @@ public class JSPServlet extends HttpServlet {
             throws ServletException, IOException {
 
         Quiz quiz = (Quiz) request.getSession().getAttribute("quiz");
-        if (getValidateAgeFromPage(request) > 0) {
-            if (request.getParameter("btnNext") != null) {
-                String ans = request.getParameter("txtAnswer");
-                request.setAttribute("displayWrong", "block");
+//        request.getSession().setAttribute("tries", quiz.getCurrentTries());
+
+        if (request.getParameter("btnNext") != null) {
+
+            String ans = request.getParameter("txtAnswer");
+            if (request.getAttribute("showAnswer") == null) {
                 if (quiz.isCorrect(ans)) {
                     quiz.scoreAnswer();
                     request.setAttribute("displayWrong", "none");
+                } else {
+
+                    request.setAttribute("wrongGuessMsg", "Your last answer was not correct! Please try again");
+                    request.setAttribute("displayWrong", "block");
+                    attemptLimitLeft(request);
                 }
                 if (quiz.getNumCorrect() == quiz.getNumQuestions()) {
-                    RequestDispatcher dispatch = request.getRequestDispatcher("GenQuizOverPage.jsp");
-                    dispatch.forward(request, response);
-                } else {
-                    RequestDispatcher dispatch = request.getRequestDispatcher("GenQuizPage.jsp");
-                    dispatch.forward(request, response);
+                    getQuizOverPage(request, response);
+                    return;
                 }
 
-            } else if (request.getParameter("btnReset") != null) {
-                response.sendRedirect("");
             }
-        } else {
-            RequestDispatcher dispatch = request.getRequestDispatcher("GenQuizPage.jsp");
-            dispatch.forward(request, response);
+
+            getQuizPage(request, response);
+            if ((boolean) request.getAttribute("showAnswer")) {
+                quiz.scoreAnswer();
+            }
+
+        } else if (request.getParameter("btnReset") != null) {
+            response.sendRedirect("");
+        } else if (request.getParameter("btnAge") != null) {
+            getValidateAgeFromPage(request);
+            getQuizPage(request, response);
         }
 
+//        } else {
+//            
+//            RequestDispatcher dispatch = request.getRequestDispatcher("GenQuizPage.jsp");
+//            dispatch.forward(request, response);
+//        }
+    }
+
+    private void getQuizPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        RequestDispatcher dispatch = request.getRequestDispatcher("GenQuizPage.jsp");
+        dispatch.forward(request, response);
+    }
+
+    private void getQuizOverPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        RequestDispatcher dispatch = request.getRequestDispatcher("GenQuizOverPage.jsp");
+        dispatch.forward(request, response);
+    }
+
+    private boolean attemptLimitLeft(HttpServletRequest request) {
+        Quiz quiz = (Quiz) request.getSession().getAttribute("quiz");
+        if (quiz.getCurrentTries() == 3) {
+            request.setAttribute("ans", quiz.getCurrentAns());
+            request.setAttribute("wrongGuessMsg", "Tries limit Reached. Correct Answer: " + quiz.getCurrentAns());
+            request.setAttribute("displayWrong", "block");
+            request.setAttribute("showAnswer", true);
+            return false;
+        }
+//        if (quiz.getCurrentTries() > 3) {
+//            
+//        }
+        return true;
     }
 
     private int getValidateAgeFromPage(HttpServletRequest request) {
-        int age ;
+        int age;
         if (request.getSession().getAttribute("age") == null) {
             try {
                 age = Integer.parseInt(request.getParameter("txtAge"));
 
                 if (age > 4 && age < 100) {
                     request.getSession().setAttribute("showAgeRequest", "none");
-                    request.getSession().setAttribute("age",age);
+                    request.getSession().setAttribute("age", age);
                     return age;
                 } else {
                     request.getSession().setAttribute("ageErrMsg", "Age Must be between 4 and 100");
