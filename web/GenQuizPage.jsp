@@ -22,7 +22,7 @@
             </span>  
             Attempt ${quiz.currentTries}/3
             
-            <p>Your current score is: ${quiz.numCorrect} </br></br>
+            <p>Your current score is: ${quiz.totScore} </br></br>
             <p>Guess the next number in the sequence! 
                 ${quiz.currentQuestion}</p>
 

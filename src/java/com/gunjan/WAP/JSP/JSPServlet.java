@@ -50,6 +50,7 @@ public class JSPServlet extends HttpServlet {
         request.getSession().setAttribute("age", null);
         request.getSession().setAttribute("showAgeRequest", "block");
         request.getSession().setAttribute("ans", "");
+        request.getSession().setAttribute("showAnswer",false);
         System.out.println("Got DoGet");
         RequestDispatcher dispatch = request.getRequestDispatcher("GenQuizPage.jsp");
         dispatch.forward(request, response);
@@ -74,7 +75,7 @@ public class JSPServlet extends HttpServlet {
         if (request.getParameter("btnNext") != null) {
 
             String ans = request.getParameter("txtAnswer");
-            if (request.getAttribute("showAnswer") == null) {
+            if (!(boolean)request.getSession().getAttribute("showAnswer")) {
                 if (quiz.isCorrect(ans)) {
                     quiz.scoreAnswer();
                     request.setAttribute("displayWrong", "none");
@@ -92,7 +93,8 @@ public class JSPServlet extends HttpServlet {
             }
 
             getQuizPage(request, response);
-            if ((boolean) request.getAttribute("showAnswer")) {
+            System.out.println(request.getSession().getAttribute("showAnswer"));
+            if ((boolean) request.getSession().getAttribute("showAnswer")) {
                 quiz.scoreAnswer();
             }
 

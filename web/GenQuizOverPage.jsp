@@ -11,7 +11,8 @@
         <title>NumberQuiz is over</title> 
     </head> 
     <body> 
-        <p style='color:red'>The number quiz is over! You are Einstein now.</p>	</body> 
+        <p style='color:red'>The number quiz is over! You are Einstein now.</p>	</body>
+    Your total Score : ${quiz.totScore}
     <form method='post'>
         <p><input type='submit' name='btnReset' value='Reset' /></p> 
     </form>

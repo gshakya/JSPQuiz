@@ -11,27 +11,33 @@ package com.gunjan.WAP.model;
  */
 public class Quiz {
 
-    private Question[] questions = {new Question("1,2,3,4,5", "6" , "Six"), new Question("6,5,4,3,2", "1","One")};
-    
-    private int[] score = {10,5,2,0};
-    
+    private Question[] questions = {new Question("1,2,3,4,5", "6", "Six"), new Question("6,5,4,3,2", "1", "One")};
+
+    private int[] scoreVal = {10, 5, 2, 0};
+
     private int correctCount;
 
     private int currIndex;
+
+    private int totScore = 0;
+
+    public int getTotScore() {
+        return totScore;
+    }
 
     public Quiz() {
         correctCount = 0;
         currIndex = 0;
     }
 
-    public int getScore(){
-        try{
-            return score[getCurrentTries()];
-        }
-        catch (ArrayIndexOutOfBoundsException e){
+    private int getScore() {
+        try {
+            return scoreVal[getCurrentTries()];
+        } catch (ArrayIndexOutOfBoundsException e) {
             return 0;
         }
     }
+
     public int getNumCorrect() {
         return correctCount;
     }
@@ -39,27 +45,27 @@ public class Quiz {
     public String getCurrentQuestion() {
         return questions[currIndex].getQuestion();
     }
-    
-    public String getCurrentAns(){
-        return  questions[currIndex].getAnswer();
+
+    public String getCurrentAns() {
+        return questions[currIndex].getAnswer();
     }
 
-     public String getCurrentHint() {
+    public String getCurrentHint() {
         return questions[currIndex].getHint();
     }
-    
-     public void increaseCurrTries(){
-          questions[currIndex].increaseTries();
-     }
-     
-     public int getCurrentTries(){
-         return questions[currIndex].getTries();
-     }
-     
+
+    public void increaseCurrTries() {
+        questions[currIndex].increaseTries();
+    }
+
+    public int getCurrentTries() {
+        return questions[currIndex].getTries();
+    }
+
     public boolean isCorrect(String answer) {
         if (questions[currIndex].getAnswer().equals(answer)) {
-
             return true;
+
         }
         increaseCurrTries();
         return false;
@@ -68,6 +74,7 @@ public class Quiz {
     public void scoreAnswer() {
         if (correctCount < questions.length && currIndex < questions.length) {
             correctCount++;
+            totScore += getScore();
             currIndex++;
         }
     }
@@ -114,6 +121,5 @@ class Question {
     public String getHint() {
         return hint;
     }
-    
 
 }
